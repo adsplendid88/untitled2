@@ -1,122 +1,439 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart'; // Untuk debugPaintSizeEnabled
 
 void main() {
+  debugPaintSizeEnabled = true; // Aktifkan debug layout (opsional, bisa matikan nanti)
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      title: 'Widget II Demo',
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Widget II Examples')),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Contoh Container (Halaman 9-14: Lake Toba App)
+              const LakeTobaContainerExample(),
+
+              // Contoh GridView (Halaman 17-19)
+              const SizedBox(height: 20, child: Text('GridView Example', style: TextStyle(fontWeight: FontWeight.bold))),
+              const GridViewExample(),
+
+              // Contoh ListView (Halaman 20-22)
+              const SizedBox(height: 20, child: Text('ListView Example', style: TextStyle(fontWeight: FontWeight.bold))),
+              const ListViewExample(),
+
+              // Contoh Stack (Halaman 23-24)
+              const SizedBox(height: 20, child: Text('Stack Example', style: TextStyle(fontWeight: FontWeight.bold))),
+              const StackExample(),
+
+              // Contoh Card (Halaman 25-28)
+              const SizedBox(height: 20, child: Text('Card Example', style: TextStyle(fontWeight: FontWeight.bold))),
+              const CardExample(),
+
+              // Contoh ListTile (Halaman 29-31)
+              const SizedBox(height: 20, child: Text('ListTile Example', style: TextStyle(fontWeight: FontWeight.bold))),
+              const ListTileExample(),
+            ],
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+// --- Contoh Container: Lake Toba (Halaman 9-14) ---
+class LakeTobaContainerExample extends StatelessWidget {
+  const LakeTobaContainerExample({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Widget build(BuildContext context) {
+    return const SingleChildScrollView(
+      child: Column(
+        children: [
+          ImageSection(image: 'assets/images/toba1.jpeg'),
+          TitleSection(name: 'Lake Toba', location: 'Samosir, North Sumatra'),
+          ButtonSection(),
+          TextSection(
+            description: 'Lake Toba (Indonesian: Danau Toba, Toba Batak: Tao Toba) is a large '
+                'natural lake in North Sumatra, Indonesia, occupying the caldera of '
+                'the Toba supervolcano. The lake is located in the middle of '
+                'the northern part of the island of Sumatra, with a surface elevation '
+                'of about 900 metres (2,953 ft), the lake stretches '
+                'from 2.88°N 98.52°E to 2.35°N 99.1°E. '
+                'The lake is about 100 kilometres (62 miles) long, 30 kilometres (19 mi) wide, '
+                'and up to 505 metres (1,657 ft) deep. It is the largest lake in Indonesia '
+                'and the largest volcanic lake in the world. '
+                'Toba Caldera is one of twenty geoparks in Indonesia, '
+                'and was recognised in July 2020 as one of the UNESCO Global Geoparks.',
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class TitleSection extends StatelessWidget {
+  const TitleSection({super.key, required this.name, required this.location});
 
-  void _incrementCounter() {
+  final String name;
+  final String location;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Text(location, style: TextStyle(color: Colors.grey[500])),
+              ],
+            ),
+          ),
+          const FavoriteWidget(),
+        ],
+      ),
+    );
+  }
+}
+
+class FavoriteWidget extends StatefulWidget {
+  const FavoriteWidget({super.key});
+
+  @override
+  State<FavoriteWidget> createState() => _FavoriteWidgetState();
+}
+
+class _FavoriteWidgetState extends State<FavoriteWidget> {
+  bool _isFavorited = true;
+  int _favoriteCount = 41;
+
+  void _toggleFavorite() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      if (_isFavorited) {
+        _favoriteCount -= 1;
+        _isFavorited = false;
+      } else {
+        _favoriteCount += 1;
+        _isFavorited = true;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(0),
+          child: IconButton(
+            padding: const EdgeInsets.all(0),
+            alignment: Alignment.center,
+            icon: (_isFavorited ? const Icon(Icons.star) : const Icon(Icons.star_border)),
+            color: Colors.red[500],
+            onPressed: _toggleFavorite,
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        SizedBox(width: 18, child: SizedBox(child: Text('$_favoriteCount'))),
+      ],
     );
   }
 }
+
+class ButtonSection extends StatelessWidget {
+  const ButtonSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = Theme.of(context).primaryColor;
+    return SizedBox(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ButtonWithText(color: color, icon: Icons.call, label: 'CALL'),
+          ButtonWithText(color: color, icon: Icons.near_me, label: 'ROUTE'),
+          ButtonWithText(color: color, icon: Icons.share, label: 'SHARE'),
+        ],
+      ),
+    );
+  }
+}
+
+class ButtonWithText extends StatelessWidget {
+  const ButtonWithText({super.key, required this.color, required this.icon, required this.label});
+
+  final Color color;
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: color),
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: color),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class TextSection extends StatelessWidget {
+  const TextSection({super.key, required this.description});
+
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Text(description, softWrap: true),
+    );
+  }
+}
+
+class ImageSection extends StatelessWidget {
+  const ImageSection({super.key, required this.image});
+
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(image, width: 600, height: 240, fit: BoxFit.cover);
+  }
+}
+
+// --- Contoh GridView (Halaman 17-19) ---
+class GridViewExample extends StatelessWidget {
+  const GridViewExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 400, // Batasi tinggi agar tidak overflow di demo
+      child: GridView.extent(
+        maxCrossAxisExtent: 200,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        primary: false,
+        padding: const EdgeInsets.all(16),
+        children: List.generate(12, (index) => Container(
+          color: Colors.primaries[index % Colors.primaries.length],
+          child: Image.asset('assets/images/flutter.png'),
+        )),
+      ),
+    );
+  }
+}
+
+// --- Contoh ListView (Halaman 20-22) ---
+class ListViewExample extends StatelessWidget {
+  const ListViewExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200, // Batasi tinggi
+      child: ListView(
+        padding: const EdgeInsets.all(10),
+        children: const <Widget>[
+          ListTile(title: Text('115 - Manajemen Bisnis', style: TextStyle(fontSize: 20, color: Colors.yellow))),
+          ListTile(title: Text('125 - Akuntansi Bisnis', style: TextStyle(fontSize: 20, color: Colors.yellow))),
+          ListTile(title: Text('205 - Ilmu Hukum', style: TextStyle(fontSize: 20, color: Colors.red))),
+          ListTile(title: Text('315 - Arsitektur', style: TextStyle(fontSize: 20, color: Colors.blue))),
+          ListTile(title: Text('325 - Teknik Sipil', style: TextStyle(fontSize: 20, color: Colors.blue))),
+          ListTile(title: Text('345 - Teknik Persencanaan Wilayah dan Kota', style: TextStyle(fontSize: 20, color: Colors.blue))),
+          ListTile(title: Text('405 - Kedokteran', style: TextStyle(fontSize: 20, color: Colors.green))),
+          ListTile(title: Text('515 - Teknik Mesin', style: TextStyle(fontSize: 20, color: Colors.blue))),
+          ListTile(title: Text('525 - Teknik Elektro', style: TextStyle(fontSize: 20, color: Colors.blue))),
+          ListTile(title: Text('535 - Teknik Informatika', style: TextStyle(fontSize: 20, color: Colors.purple))),
+          ListTile(title: Text('545 - Teknik Industri', style: TextStyle(fontSize: 20, color: Colors.blue))),
+          ListTile(title: Text('615 - Desain Interior', style: TextStyle(fontSize: 20, color: Colors.brown))),
+          ListTile(title: Text('625 - Desain Komunikasi Visual', style: TextStyle(fontSize: 20, color: Colors.brown))),
+          ListTile(title: Text('705 - Psikologi', style: TextStyle(fontSize: 20, color: Colors.cyan))),
+          ListTile(title: Text('825 - Sistem Informasi', style: TextStyle(fontSize: 20, color: Colors.purple))),
+          ListTile(title: Text('835 - Sistem Komputer', style: TextStyle(fontSize: 20, color: Colors.purple))),
+          ListTile(title: Text('915 - Ilmu Komunikasi', style: TextStyle(fontSize: 20, color: Colors.orange))),
+        ],
+      ),
+    );
+  }
+}
+
+// --- Contoh Stack (Halaman 23-24) ---
+class StackExample extends StatelessWidget {
+  const StackExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 300,
+      child: Stack(
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(left: 20),
+            child: Image.asset('assets/images/flutter.png', height: 250, width: 250),
+          ),
+          Container(
+            alignment: Alignment.topCenter,
+            margin: const EdgeInsets.only(top: 100, left: 50),
+            child: Image.asset('assets/images/flutter.png', height: 250, width: 250),
+          ),
+          Container(
+            alignment: Alignment.topCenter,
+            margin: const EdgeInsets.only(top: 140),
+            child: const Text(
+              "Contoh Stack untuk menimpa satu gambar dengan gambar lain dan text",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- Contoh Card (Halaman 25-28) ---
+class CardExample extends StatelessWidget {
+  const CardExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(5),
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              color: Colors.grey,
+              elevation: 5,
+              child: Column(
+                children: <Widget>[
+                  const Padding(padding: EdgeInsets.all(10)),
+                  Image.asset('assets/images/flutter.png', scale: 10),
+                  ListTile(
+                    title: const Text('Flutter 01', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                    subtitle: const Text(
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+                          'Curabitur mattis efficitur nulla, sed fringilla orci lobortis a. '
+                          'Nunc rhoncus vel lorem eu aliquam. Fusce vestibulum odio nec '
+                          'consequat vehicula. Duis nec venenatis odio, vel dapibus est. '
+                          'Phasellus at enim fringilla, ullamcorper ipsum quis, ornare sapien. '
+                          'Vivamus non nunc eu tellus molestie porta. Proin a elementum quam. '
+                          'Nunc malesuada metus sit amet ante porttitor scelerisque. '
+                          'Nulla gravida et metus mattis tincidunt. Pellentesque sodales tincidunt tortor, '
+                          'in pharetra mauris tempus in.',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Tambahkan card kedua jika mau, mirip di PDF
+          Container(
+            padding: const EdgeInsets.all(5),
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              color: Colors.grey,
+              elevation: 5,
+              child: Column(
+                children: <Widget>[
+                  const Padding(padding: EdgeInsets.all(10)),
+                  Image.asset('assets/images/flutter.png', scale: 10),
+                  ListTile(
+                    title: const Text('Flutter 02', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                    subtitle: const Text(
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+                          'Curabitur mattis efficitur nulla, sed fringilla orci lobortis a. '
+                          'Nunc rhoncus vel lorem eu aliquam. Fusce vestibulum odio nec '
+                          'consequat vehicula. Duis nec venenatis odio, vel dapibus est. '
+                          'Phasellus at enim fringilla, ullamcorper ipsum quis, ornare sapien. '
+                          'Vivamus non nunc eu tellus molestie porta. Proin a elementum quam. '
+                          'Nunc malesuada metus sit amet ante porttitor scelerisque. '
+                          'Nulla gravida et metus mattis tincidunt. Pellentesque sodales tincidunt tortor, '
+                          'in pharetra mauris tempus in.',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- Contoh ListTile (Halaman 29-31) ---
+class ListTileExample extends StatelessWidget {
+  const ListTileExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          const Padding(padding: EdgeInsets.only(top: 10)),
+          const Card(child: ListTile(title: Text('ListTile Satu Baris'))),
+          Card(
+            child: const ListTile(
+              title: Text('ListTile Dua Baris'),
+              subtitle: Text('Yang diatas Title, yang ini subtitle'),
+            ),
+          ),
+          Card(
+            child: const ListTile(
+              title: Text('List Title 3 Baris yang mencakup Icon'),
+              subtitle: Text('Berkat panjangnya subtitle pada ListTile secara tidak langsung dapat disebut lebih dari 3 line'),
+              isThreeLine: true,
+            ),
+          ),
+          Card(
+            child: const ListTile(
+              leading: Icon(Icons.home),
+              title: Text('List Tile dengan Icon disamping'),
+              subtitle: Text('Sebelah kiri ini logo home'),
+            ),
+          ),
+          Card(
+            child: const ListTile(
+              leading: Icon(Icons.navigation),
+              title: Text('List tile dengan Icon dan Menu'),
+              subtitle: Text('Sebelah kiri ini logo Icon dan sebelah kanan menu burger'),
+              trailing: Icon(Icons.more_vert),
+              isThreeLine: true,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
